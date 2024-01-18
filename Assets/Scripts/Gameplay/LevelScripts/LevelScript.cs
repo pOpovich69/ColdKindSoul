@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,16 @@ public class LevelScript : MonoBehaviour
     [SerializeField] private Transform[] RandomPoints;
     [SerializeField] private GameObject FinishPortal;
     [SerializeField] private GameObject player;
+
+    [SerializeField] private GameObject menu;
+
     private Animation anim;
     private Player playerScript;
     private int maxCountEnemysOnLevel;
     private int maxWaves;
     private int currentWave;
+
+
     void Start()
     {
         playerScript = player.GetComponent<Player>();
@@ -56,7 +62,6 @@ public class LevelScript : MonoBehaviour
         {
             int randomPoint = GetRandomPoint(list);
             list.Add(randomPoint);
-            Debug.Log(RandomPoints[randomPoint].position);
             Instantiate(Enemy, RandomPoints[randomPoint].position, Quaternion.identity);
         }
     }
@@ -91,7 +96,7 @@ public class LevelScript : MonoBehaviour
     }
     private int GetRandomPoint(List<int> listWithData)
     {
-        int randomPoint = Random.Range(0, RandomPoints.Length);
+        int randomPoint = UnityEngine.Random.Range(0, RandomPoints.Length);
         if (listWithData.Contains(randomPoint))
             return GetRandomPoint(listWithData);
         else

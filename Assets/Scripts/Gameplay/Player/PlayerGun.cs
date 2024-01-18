@@ -20,8 +20,11 @@ public class PlayerGun : MonoBehaviour
     }
     void Update()
     {
-        GunLookOnMous();
-        Shot();
+        if (Time.timeScale > 0)
+        {
+            GunLookOnMous();
+            Shot();
+        }
     }
     private void Shot()
     {
