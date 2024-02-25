@@ -8,6 +8,8 @@ namespace Assets.Scripts.UI
     {
         [SerializeField] private GameObject menu;
         [SerializeField] private GameObject settingWindow;
+        [SerializeField] private GameObject loseWindow;
+        [SerializeField] private GameObject winWindow;
 
         private bool menuIsOpen;
         private bool settingIsOpen;
@@ -21,23 +23,26 @@ namespace Assets.Scripts.UI
         }
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (!loseWindow.activeSelf && !winWindow.activeSelf)
             {
-                if (menuIsOpen && !settingIsOpen)
+                if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    menuIsOpen = !menuIsOpen;
-                    menu.SetActive(menuIsOpen);
-                    Time.timeScale = Convert.ToSingle(!menuIsOpen);
-                }
-                else if (!menuIsOpen && !settingIsOpen)
-                {
-                    menuIsOpen = !menuIsOpen;
-                    menu.SetActive(menuIsOpen);
-                    Time.timeScale = Convert.ToSingle(!menuIsOpen);
-                }
-                else if (settingIsOpen && !menuIsOpen)
-                {
-                    CloseSettings();
+                    if (menuIsOpen && !settingIsOpen)
+                    {
+                        menuIsOpen = !menuIsOpen;
+                        menu.SetActive(menuIsOpen);
+                        Time.timeScale = Convert.ToSingle(!menuIsOpen);
+                    }
+                    else if (!menuIsOpen && !settingIsOpen)
+                    {
+                        menuIsOpen = !menuIsOpen;
+                        menu.SetActive(menuIsOpen);
+                        Time.timeScale = Convert.ToSingle(!menuIsOpen);
+                    }
+                    else if (settingIsOpen && !menuIsOpen)
+                    {
+                        CloseSettings();
+                    }
                 }
             }
         }
@@ -63,6 +68,10 @@ namespace Assets.Scripts.UI
             settingIsOpen = false;
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+        }
+        public void RestartGame()
+        {
+            SceneManager.LoadScene("Game");
         }
         public void GoToMainMenu()
         {

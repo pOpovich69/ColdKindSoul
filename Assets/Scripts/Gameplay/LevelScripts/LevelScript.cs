@@ -1,23 +1,29 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelScript : MonoBehaviour
 {
+    [Header("Level objects")]
     [SerializeField] private GameObject Enemy;
     [SerializeField] private Transform[] RandomPoints;
     [SerializeField] private GameObject FinishPortal;
     [SerializeField] private GameObject player;
 
+    [Header("UI Thinks")]
+    [SerializeField] private Text levelTimeText;
     [SerializeField] private GameObject menu;
+    [SerializeField] private GameObject winPopup;
 
     private Animation anim;
     private Player playerScript;
+
     private int maxCountEnemysOnLevel;
     private int maxWaves;
     private int currentWave;
-
+    private int levelTimeSec;
+    private int levelTimeMin;
 
     void Start()
     {
@@ -28,9 +34,12 @@ public class LevelScript : MonoBehaviour
         maxWaves = 3;   
         currentWave = 1;
         SpawnEnemies();
+        StartCoroutine(LevelTimerRoutin());
     }
     void Update()
     {
+        if (Time.timeScale <= 0)
+            return;
         LevelCheck();
     }
     public void NextWave()
@@ -40,10 +49,14 @@ public class LevelScript : MonoBehaviour
             currentWave++;
             playerScript.PlayAnimation("PlayerDisappears");;
             Time.timeScale = 0;
+
             anim.Play("LightDown");
+
             GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
             DestroyEnemyies(enemys);
+
             anim.Play("LightUp");
+
             Time.timeScale = 1f;
             player.transform.position = Vector3.zero;
             playerScript.PlayAnimation("PlayerAppears");
@@ -51,8 +64,8 @@ public class LevelScript : MonoBehaviour
         }
         else
         {
-            Time.timeScale = 0;
-            Debug.Log("You win!");
+            Time.timeScale = 0f;
+            winPopup.SetActive(true);
         }
     }
     private void SpawnEnemies()
@@ -87,6 +100,22 @@ public class LevelScript : MonoBehaviour
         yield return new WaitForSeconds(time);
         SpawnEnemies();
     }
+    private IEnumerator LevelTimerRoutin()
+    {
+        while (true)
+        {
+            levelTimeText.text = $"{levelTimeMin:D2}:{levelTimeSec:D2}";
+            yield return new WaitForSeconds(1);
+            if(levelTimeSec == 59)
+            {
+                levelTimeSec = 0;
+                levelTimeMin++;
+                continue;
+            }
+            levelTimeSec++;
+        }
+    }
+
     private void DestroyEnemyies(GameObject[] enemyies)
     {
         foreach (GameObject enemy in enemyies)

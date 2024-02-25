@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using UnityEditor;
+using System;
 using UnityEngine;
 
 public class FinishPortal : MonoBehaviour
@@ -21,14 +18,16 @@ public class FinishPortal : MonoBehaviour
     private void Start()
     {
         anim = GetComponent<Animator>();
-        this.gameObject.SetActive(false);
-        helpButton.SetActive(false);
+
+        gameObject.SetActive(false);
         isActive = false;
         playerMask = LayerMask.GetMask("Player");
+
+        helpButton.SetActive(false);
     }
     private void Update()
     {
-        if (!isActive)
+        if (!isActive || Time.timeScale <= 0)
             return;
         PlayerCheck();
     }

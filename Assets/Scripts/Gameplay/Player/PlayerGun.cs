@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerGun : MonoBehaviour
@@ -9,6 +7,8 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private GameObject Player;
     [SerializeField] private Transform[] RandomPoints;
 
+    private Player playerScript;
+
     private float offset;
     private float maxDelay;
     private float delay;
@@ -17,10 +17,11 @@ public class PlayerGun : MonoBehaviour
         offset = -90f;
         maxDelay = 1f;
         delay = maxDelay;
+        playerScript = Player.GetComponent<Player>();
     }
     void Update()
     {
-        if (Time.timeScale > 0)
+        if (Time.timeScale > 0 && !playerScript.IsFrozen)
         {
             GunLookOnMous();
             Shot();
