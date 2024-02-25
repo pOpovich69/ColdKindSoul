@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -30,15 +28,18 @@ public class Enemy : MonoBehaviour
         isAttack = false;
         attackRadius = 1f;
         attackSpeed = 0.5f;
+
         player = GameObject.FindGameObjectWithTag("Player").transform;
+
         iceCube = gameObject.transform.GetChild(0).gameObject;
         SetBoolDataOnIceCube(false);
+
         animator = GetComponent<Animator>();
 
     }
     private void Update()
     {
-        if (IsFrozen || isAttack)
+        if (IsFrozen || isAttack || Time.timeScale <= 0)
             return;
         Move();
         Attack();
