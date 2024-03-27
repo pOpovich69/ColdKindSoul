@@ -8,6 +8,7 @@ namespace Assets.Scripts.UI
     {
         [SerializeField] private GameObject menu;
         [SerializeField] private GameObject settingWindow;
+        [SerializeField] private GameObject levelList;
 
         private bool menuIsOpen;
         private bool settingIsOpen;
@@ -16,6 +17,7 @@ namespace Assets.Scripts.UI
         {
             menuIsOpen = true;
             settingIsOpen = false;
+            levelList.SetActive(false);
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
         }
@@ -28,10 +30,6 @@ namespace Assets.Scripts.UI
                     CloseSettings();
                 }
             }
-        }
-        public void StartGame()
-        {
-            SceneManager.LoadScene("Game");
         }
         public void OpenSettings()
         {
@@ -46,6 +44,18 @@ namespace Assets.Scripts.UI
             settingIsOpen = false;
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+        }
+        public void OpenLevelList()
+        {
+            menuIsOpen = false;
+            menu.SetActive(menuIsOpen);
+            levelList.SetActive(true);
+        }
+        public void CloseLevelList()
+        {
+            menuIsOpen = true;
+            menu.SetActive(menuIsOpen);
+            levelList.SetActive(false);
         }
         public void Exit()
         {

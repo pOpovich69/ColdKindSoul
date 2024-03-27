@@ -1,3 +1,5 @@
+using Assets.Scripts.Arch.Facades;
+using Assets.Scripts.Gameplay.LevelScripts.LevelLogic;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,29 +13,34 @@ public class LevelScript : MonoBehaviour
     [SerializeField] private GameObject FinishPortal;
     [SerializeField] private GameObject player;
 
-    [Header("UI Thinks")]
+    [Header("UI Things")]
     [SerializeField] private Text levelTimeText;
     [SerializeField] private GameObject menu;
     [SerializeField] private GameObject winPopup;
 
     private Animation anim;
     private Player playerScript;
+    private Level currentLevel;
 
-    private int maxCountEnemysOnLevel;
-    private int maxWaves;
-    private int currentWave;
+    //private int maxCountEnemysOnLevel;
+    //private int maxWaves;
+    //private int currentWave;
     private int levelTimeSec;
     private int levelTimeMin;
 
     void Start()
     {
+        currentLevel = LevelsFacade.GetLevelWithId(LevelStatic.SelectedLevelId);
+        currentLevel.CurrentWave = 1;
+        Debug.Log(LevelStatic.SelectedLevelId);
+
         playerScript = player.GetComponent<Player>();
+
         anim = GetComponent<Animation>();
+
         Time.timeScale = 1.0f;
-        maxCountEnemysOnLevel = 1;
-        maxWaves = 3;   
-        currentWave = 1;
-        SpawnEnemies();
+
+        StartCoroutine(SpawnEnemiesAfterSomeTimeRoutin(2f));
         StartCoroutine(LevelTimerRoutin());
     }
     void Update()
@@ -44,9 +51,9 @@ public class LevelScript : MonoBehaviour
     }
     public void NextWave()
     {
-        if (currentWave < maxWaves)
+        if (currentLevel.CurrentWave < currentLevel.MaxWaves)
         {
-            currentWave++;
+            currentLevel.CurrentWave++;
             playerScript.PlayAnimation("PlayerDisappears");;
             Time.timeScale = 0;
 
@@ -60,7 +67,7 @@ public class LevelScript : MonoBehaviour
             Time.timeScale = 1f;
             player.transform.position = Vector3.zero;
             playerScript.PlayAnimation("PlayerAppears");
-            StartCoroutine(SpawnEnemiesAfterSomeTimeRoutin(3f));
+            StartCoroutine(SpawnEnemiesAfterSomeTimeRoutin(2f));
         }
         else
         {
@@ -71,7 +78,7 @@ public class LevelScript : MonoBehaviour
     private void SpawnEnemies()
     {
         List<int> list = new();
-        for (int i = 0; i < maxCountEnemysOnLevel; i++)
+        for (int i = 0; i < currentLevel.PointInCurrentWave; i++)
         {
             int randomPoint = GetRandomPoint(list);
             list.Add(randomPoint);
