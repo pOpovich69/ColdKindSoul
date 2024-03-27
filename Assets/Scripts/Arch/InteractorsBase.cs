@@ -18,6 +18,7 @@ namespace Assets.Scripts.Arch
         }
         public void CreateAllInteractors()
         {
+            CreateInteractor<LevelsInteractor>();
             CreateInteractor<PlayerInteractor>();
         }
         public void InitializeAllInteractors()

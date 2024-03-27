@@ -17,7 +17,6 @@ namespace Assets.Scripts.Arch.Repositories
         }
         public void Save()
         {
-
             storage.Save(playerData);
         }
     }
