@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.UI
 {
-    class MenuState: MonoBehaviour
+    class MenuState : MonoBehaviour
     {
         [SerializeField] private GameObject menu;
         [SerializeField] private GameObject settingWindow;
@@ -20,6 +20,7 @@ namespace Assets.Scripts.UI
             settingIsOpen = false;
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+            AllBtnsToDefault();
         }
         private void Update()
         {
@@ -32,16 +33,19 @@ namespace Assets.Scripts.UI
                         menuIsOpen = !menuIsOpen;
                         menu.SetActive(menuIsOpen);
                         Time.timeScale = Convert.ToSingle(!menuIsOpen);
+                        AllBtnsToDefault();
                     }
                     else if (!menuIsOpen && !settingIsOpen)
                     {
                         menuIsOpen = !menuIsOpen;
                         menu.SetActive(menuIsOpen);
                         Time.timeScale = Convert.ToSingle(!menuIsOpen);
+                        AllBtnsToDefault();
                     }
                     else if (settingIsOpen && !menuIsOpen)
                     {
                         CloseSettings();
+                        AllBtnsToDefault();
                     }
                 }
             }
@@ -53,6 +57,7 @@ namespace Assets.Scripts.UI
                 menuIsOpen = false;
                 menu.SetActive(menuIsOpen);
                 Time.timeScale = Convert.ToSingle(!menuIsOpen);
+                AllBtnsToDefault();
             }
         }
         public void OpenSettings()
@@ -61,6 +66,7 @@ namespace Assets.Scripts.UI
             settingIsOpen = true;
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+            AllBtnsToDefault();
         }
         public void CloseSettings()
         {
@@ -68,14 +74,25 @@ namespace Assets.Scripts.UI
             settingIsOpen = false;
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+            AllBtnsToDefault();
         }
         public void RestartGame()
         {
             SceneManager.LoadScene("Game");
+            AllBtnsToDefault();
         }
         public void GoToMainMenu()
         {
             SceneManager.LoadScene("MainMenu");
+            AllBtnsToDefault();
+        }
+        private void AllBtnsToDefault()
+        {
+            Transform[] comps = GetComponentsInChildren<Transform>();
+            foreach (var item in comps)
+            {
+                item.localScale = new Vector3(1f, 1f, 1f);
+            }
         }
     }
 }

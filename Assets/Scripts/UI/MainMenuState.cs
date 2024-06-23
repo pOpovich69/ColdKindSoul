@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Assets.Scripts.Arch.Facades;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.UI
 {
-    class MainMenuState: MonoBehaviour
+    class MainMenuState : MonoBehaviour
     {
         [SerializeField] private GameObject menu;
         [SerializeField] private GameObject settingWindow;
@@ -20,6 +19,7 @@ namespace Assets.Scripts.UI
             levelList.SetActive(false);
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+            AllBtnsToDefault();
         }
         private void Update()
         {
@@ -28,7 +28,12 @@ namespace Assets.Scripts.UI
                 if (settingIsOpen && !menuIsOpen)
                 {
                     CloseSettings();
+                    AllBtnsToDefault();
                 }
+            }
+            if(Input.GetKeyDown(KeyCode.Numlock))
+            {
+                LevelsFacade.SetLevelsByDefault();
             }
         }
         public void OpenSettings()
@@ -37,6 +42,7 @@ namespace Assets.Scripts.UI
             settingIsOpen = true;
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+            AllBtnsToDefault();
         }
         public void CloseSettings()
         {
@@ -44,22 +50,34 @@ namespace Assets.Scripts.UI
             settingIsOpen = false;
             menu.SetActive(menuIsOpen);
             settingWindow.SetActive(settingIsOpen);
+            AllBtnsToDefault();
         }
         public void OpenLevelList()
         {
             menuIsOpen = false;
             menu.SetActive(menuIsOpen);
             levelList.SetActive(true);
+            AllBtnsToDefault();
         }
         public void CloseLevelList()
         {
             menuIsOpen = true;
             menu.SetActive(menuIsOpen);
             levelList.SetActive(false);
+            AllBtnsToDefault();
         }
         public void Exit()
         {
             Application.Quit();
+        }
+
+        private void AllBtnsToDefault()
+        {
+            Transform[] comps = GetComponentsInChildren<Transform>();
+            foreach (var item in comps)
+            {
+                item.localScale = new Vector3(1f, 1f, 1f);
+            }
         }
     }
 }

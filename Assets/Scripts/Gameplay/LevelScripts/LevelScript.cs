@@ -1,5 +1,7 @@
 using Assets.Scripts.Arch.Facades;
+using Assets.Scripts.Gameplay.Enemy;
 using Assets.Scripts.Gameplay.LevelScripts.LevelLogic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +11,7 @@ public class LevelScript : MonoBehaviour
 {
     [Header("Level objects")]
     [SerializeField] private GameObject Enemy;
+    [SerializeField] private GameObject Enemy2;
     [SerializeField] private Transform[] RandomPoints;
     [SerializeField] private GameObject FinishPortal;
     [SerializeField] private GameObject player;
@@ -20,26 +23,20 @@ public class LevelScript : MonoBehaviour
 
     private Animation anim;
     private Player playerScript;
-    private Level currentLevel;
 
-    //private int maxCountEnemysOnLevel;
-    //private int maxWaves;
-    //private int currentWave;
     private int levelTimeSec;
     private int levelTimeMin;
 
     void Start()
     {
-        currentLevel = LevelsFacade.GetLevelWithId(LevelStatic.SelectedLevelId);
-        currentLevel.CurrentWave = 1;
-        Debug.Log(LevelStatic.SelectedLevelId);
+        //currentLevel = LevelsFacade.GetLevelWithId(LevelStatic.SelectedLevelId);
+        LevelsFacade.GetLevelWithId(LevelStatic.SelectedLevelId).CurrentWave = 1;
 
         playerScript = player.GetComponent<Player>();
 
         anim = GetComponent<Animation>();
 
         Time.timeScale = 1.0f;
-
         StartCoroutine(SpawnEnemiesAfterSomeTimeRoutin(2f));
         StartCoroutine(LevelTimerRoutin());
     }
@@ -51,10 +48,9 @@ public class LevelScript : MonoBehaviour
     }
     public void NextWave()
     {
-        if (currentLevel.CurrentWave < currentLevel.MaxWaves)
+        if (LevelsFacade.NextWave(LevelStatic.SelectedLevelId))
         {
-            currentLevel.CurrentWave++;
-            playerScript.PlayAnimation("PlayerDisappears");;
+            playerScript.PlayAnimation("PlayerDisappears"); ;
             Time.timeScale = 0;
 
             anim.Play("LightDown");
@@ -72,17 +68,33 @@ public class LevelScript : MonoBehaviour
         else
         {
             Time.timeScale = 0f;
+            LevelsFacade.SetAsDone(LevelStatic.SelectedLevelId);
+            LevelsFacade.SetStars(LevelStatic.SelectedLevelId, 3);
+            LevelsFacade.SetTime(LevelStatic.SelectedLevelId, levelTimeText.text);
+            
             winPopup.SetActive(true);
         }
     }
     private void SpawnEnemies()
     {
         List<int> list = new();
-        for (int i = 0; i < currentLevel.PointInCurrentWave; i++)
+        for (int i = 0; i < LevelsFacade.GetLevelWithId(LevelStatic.SelectedLevelId).PointInCurrentWave; i++)
         {
-            int randomPoint = GetRandomPoint(list);
-            list.Add(randomPoint);
-            Instantiate(Enemy, RandomPoints[randomPoint].position, Quaternion.identity);
+            if(LevelStatic.SelectedLevelId <= 1)
+            {
+                int randomPoint = GetRandomPoint(list);
+                list.Add(randomPoint);
+                Instantiate(Enemy, RandomPoints[randomPoint].position, Quaternion.identity);
+            }
+            else
+            {
+                int randomPoint = GetRandomPoint(list);
+                list.Add(randomPoint);
+                int randomEnemy = UnityEngine.Random.Range(0, 2);
+                Debug.Log(randomEnemy);
+                Instantiate(randomEnemy == 1 ?  Enemy : Enemy2, RandomPoints[randomPoint].position, Quaternion.identity);
+            }
+
         }
     }
     private void LevelCheck()
@@ -93,7 +105,8 @@ public class LevelScript : MonoBehaviour
         {
             for (int i = 0; i < enemys.Length; i++)
             {
-                if (!enemys[i].GetComponent<Enemy>().IsFrozen)
+                Enemy enemy = enemys[i].GetComponent<Enemy>();
+                if (!enemy.IsFrozen)
                 {
                     FinishPortal.GetComponent<FinishPortal>().Deactivate();
                     return;

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.Gameplay.LevelScripts.LevelLogic
 {
@@ -20,26 +16,22 @@ namespace Assets.Scripts.Gameplay.LevelScripts.LevelLogic
 
         public int Stars { get; set; }
 
-        public int Time {  get; set; }
+        public string Time { get; set; }
 
-        public Level(int levelId, int maxWaves) 
+        public Level(int levelId, int maxWaves)
         {
             LevelId = levelId;
             MaxWaves = maxWaves;
+            CurrentWave = 1;
 
             if (levelId > 0)
                 StartPoints = levelId;
-            else 
+            else
                 StartPoints = 1;
         }
         private int CalculatePointsAtWave()
         {
             return CurrentWave * StartPoints;
-        }
-
-        public static implicit operator Level(KeyValuePair<int, Level> v)
-        {
-            throw new NotImplementedException();
         }
     }
 }
