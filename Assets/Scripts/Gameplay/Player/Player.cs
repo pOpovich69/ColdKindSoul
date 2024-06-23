@@ -1,6 +1,4 @@
-using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -8,7 +6,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject[] PlayerHearts;
     [SerializeField] private GameObject iceCube;
     [SerializeField] private GameObject lossPopup;
-    //[SerializeField] private GameObject winPopup;
+
     private float maxSpeed;
     private float speed;
     private int health;

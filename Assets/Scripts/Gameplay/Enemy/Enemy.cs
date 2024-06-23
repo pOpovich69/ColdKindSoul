@@ -1,104 +1,70 @@
-using System.Collections;
+﻿using System.Collections;
+
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+namespace Assets.Scripts.Gameplay.Enemy
 {
-
-    public bool IsFrozen { get; private set; }
-
-    private float attackRadius;
-    private float attackSpeed;
-    private bool isAttack;
-    private LayerMask playerMask;
-
-    private float speed;
-    private int timeOfFrozen;
-    private int maxTimeOfFrozen;
-
-    private Transform player;
-    private GameObject iceCube;
-    private Animator animator;
-
-    private void Start()
+    public class Enemy: MonoBehaviour
     {
-        speed = 2f;
-        maxTimeOfFrozen = 10;
-        timeOfFrozen = maxTimeOfFrozen;
-        playerMask = LayerMask.GetMask("Player");
-        isAttack = false;
-        attackRadius = 1f;
-        attackSpeed = 0.5f;
+        public bool IsFrozen { get; protected set; }
 
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        protected float speed;
+        protected float maxSpeed;
 
-        iceCube = gameObject.transform.GetChild(0).gameObject;
-        SetBoolDataOnIceCube(false);
+        protected float attackSpeed;
 
-        animator = GetComponent<Animator>();
+        protected int timeOfFrozen;
+        protected int maxTimeOfFrozen;
 
-    }
-    private void Update()
-    {
-        if (IsFrozen || isAttack || Time.timeScale <= 0)
-            return;
-        Move();
-        Attack();
-    }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRadius);
-    }
-    public void Frozen()
-    {
-        if (!IsFrozen)
+        protected GameObject iceCube;
+        protected Animator animator;
+        protected Rigidbody2D rb;
+
+        protected LayerMask playerMask;
+        protected Transform player;
+
+        protected virtual void BaseLogic()
         {
-            StartCoroutine(FrozenRoutin());
+            if (IsFrozen || Time.timeScale <= 0)
+                return;
+            Move();
+            Attack();
         }
-        else Destroy(gameObject);
 
-    }
-    private void Move()
-    {
-        Vector3 direction = player.position - transform.position;
-        direction.Normalize();
-        transform.position += direction * speed * Time.deltaTime;
-    }
-    private void Attack()
-    {
-        Collider2D playerCol = Physics2D.OverlapCircle(transform.position, attackRadius, playerMask);
-        if (playerCol != null)
+        protected virtual void Move() { }
+
+        protected virtual void Attack() { }
+
+        public virtual void Frozen()
         {
-            StartCoroutine(AttackRoutin());
+            if (!IsFrozen)
+            {
+                StartCoroutine(FrozenRoutin());
+            }
+            else Destroy(gameObject);
+
         }
-    }
-    private IEnumerator FrozenRoutin()
-    {
-        animator.speed = 0f;
-        SetBoolDataOnIceCube(true);
-        while (timeOfFrozen > 0)
+
+        protected IEnumerator FrozenRoutin()
         {
-            yield return new WaitForSeconds(1f);
-            timeOfFrozen--;
+            animator.speed = 0f;
+            SetBoolDataOnIceCube(true);
+            while (timeOfFrozen > 0)
+            {
+                yield return new WaitForSeconds(1f);
+                timeOfFrozen--;
+            }
+            animator.speed = 1f;
+            SetBoolDataOnIceCube(false);
+            timeOfFrozen = maxTimeOfFrozen;
+            rb.velocity = Vector3.zero; 
         }
-        animator.speed = 1f;
-        SetBoolDataOnIceCube(false);
-        timeOfFrozen = maxTimeOfFrozen;
-    }
-    private IEnumerator AttackRoutin()
-    {
-        isAttack = true;
-        yield return new WaitForSeconds(attackSpeed);
-        Collider2D playerCol = Physics2D.OverlapCircle(transform.position, attackRadius, playerMask);
-        if (playerCol != null)
+
+        protected void SetBoolDataOnIceCube(bool data)
         {
-            playerCol.GetComponent<Player>().GiveDamage();
+            IsFrozen = data;
+            iceCube.SetActive(data);
         }
-        isAttack = false;
-    }
-    private void SetBoolDataOnIceCube(bool data)
-    {
-        IsFrozen = data;
-        iceCube.SetActive(data);
+
     }
 }

@@ -1,11 +1,7 @@
 ﻿using Assets.Scripts.DataSave.Data;
 using Assets.Scripts.Gameplay.LevelScripts.LevelLogic;
 using Assets.Scripts.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.Arch.Repositories
 {
@@ -18,6 +14,7 @@ namespace Assets.Scripts.Arch.Repositories
         public void Initialize()
         {
             storage = new Storage("LevelsData");
+            //storage.Save(new LevelsData());
             playerData = (LevelsData)storage.Load(new LevelsData());
             Levels = playerData.Levels;
         }
@@ -25,6 +22,11 @@ namespace Assets.Scripts.Arch.Repositories
         {
             playerData.Levels = Levels;
             storage.Save(playerData);
+        }
+
+        public void SaveByDefault()
+        {
+            storage.Save(new LevelsData());
         }
     }
 }

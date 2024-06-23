@@ -23,7 +23,7 @@ public class PlayerGun : MonoBehaviour
     {
         if (Time.timeScale > 0 && !playerScript.IsFrozen)
         {
-            GunLookOnMous();
+            GunLookOnMouse();
             Shot();
         }
     }
@@ -48,7 +48,7 @@ public class PlayerGun : MonoBehaviour
         int randomPoint = Random.Range(0, RandomPoints.Length);
         Player.transform.position = RandomPoints[randomPoint].position;
     }
-    private void GunLookOnMous()
+    private void GunLookOnMouse()
     {
         Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;

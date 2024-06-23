@@ -1,20 +1,16 @@
+using Assets.Scripts.Gameplay.Enemy;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
     private float speed;
-    private float lifeTime;
     void Start()
     {
         speed = 20f;
-        lifeTime = 1f;
     }
     private void Update()
     {
-        if (Time.timeScale <= 0)
-            return;
         transform.Translate(Vector2.up * speed * Time.deltaTime);
-        lifeTime -= Time.deltaTime;
     }
     private void OnCollisionEnter2D(Collision2D col)
     {
@@ -29,9 +25,7 @@ public class Projectile : MonoBehaviour
 
             case "Player":
                 {
-                    Player player = col.gameObject.GetComponent<Player>();
-                    Debug.Log(player);
-                    player.Frozen();
+                    col.gameObject.GetComponent<Player>().Frozen();
                     Destroy(gameObject);
                     break;
                 }
