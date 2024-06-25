@@ -13,5 +13,7 @@
 * С#
 * Unity engine
 
+## Опублікований продукт
+Інсталяційний пакет створеної гри можна завантажити з магазину [intch.io]([http://itch.io](https://mykytadiadiunov.itch.io/cold-kind-soul))
 
 
